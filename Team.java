@@ -105,12 +105,5 @@ public class Team {
             String position=sc.next();
             System.out.println(findPlayers(minHeight,minWeight,position));
         }
-        public List<Players> printsearchplayer(double minWeight,double minHeight,String position){
-               return players.stream()
-                       .filter(p ->p.getWeight()>=minWeight)
-                       .filter(p->p.getHeight()>=minHeight)
-                       .filter(p->p.getPosition().equalsIgnoreCase(position))
-                       .collect(Collectors.toList());
-        }
     }
 

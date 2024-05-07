@@ -2,6 +2,8 @@ package NBA_Team;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Team {
     private final int Max_Players=15;
@@ -61,6 +63,27 @@ public class Team {
             System.out.println("you also need"+(min_positional_requirement-countPlayersByPosition("Guard"))+" Center in your team");
         }
     }
+    public static String findPlayers(double minHeight, double minWeight, String position) {
+        List<Players> filteredPlayers = players.stream()
+                .filter(p -> p.getHeight() >= minHeight )
+                .filter(p -> p.getWeight() >= minWeight)
+                .filter(p -> p.getPosition().equalsIgnoreCase(position))
+                .collect(Collectors.toList());
+
+        if (filteredPlayers.isEmpty()) {
+            return "No players found.";
+        }
+
+        StringBuilder result = new StringBuilder();
+        for (Players p : filteredPlayers) {
+            result.append(p.getName()).append(" | ").append(p.getAge()).append(" | ").append(p.getHeight())
+                    .append(" | ").append(p.getWeight()).append(" | ").append(p.getPosition()).append(" | ")
+                    .append(p.getSalary()).append(" | ").append(p.getPoints()).append(" | ")
+                    .append(p.getRebounds()).append(" | ").append(p.getAssists()).append(" | ")
+                    .append(p.getSteals()).append(" | ").append(p.getBlocks()).append("\n");
+        }
+        return result.toString();
+    }
     public static void printteam(){
         System.out.println("Player List :");
         System.out.printf("| %-15s | %3s | %6s | %6s | %-8s | %6s | %6s | %8s | %7s | %6s | %6s |%n",
@@ -70,6 +93,24 @@ public class Team {
             System.out.printf("| %-15s | %3d | %6.2f | %6d | %-8s | %6d | %6.1f | %8.1f | %7.1f | %6.1f | %6.1f |%n",
                     player.getName(), player.getAge(), player.getHeight(),player.getHeight() ,player.getPosition() ,player.getSalary(),player.getPoints() ,player.getRebounds() ,player.getAssists() ,player.getSteals() ,player.getBlocks());
         }
+        }
+        public static void searchplayer(){
+            Scanner sc=new Scanner(System.in);
+            System.out.println("please input the information about the player ");
+            System.out.println("The minHeight:");
+            double minHeight=sc.nextDouble();
+            System.out.println("The minWeight:");
+            double minWeight=sc.nextDouble();
+            System.out.println("Position:");
+            String position=sc.next();
+            System.out.println(findPlayers(minHeight,minWeight,position));
+        }
+        public List<Players> printsearchplayer(double minWeight,double minHeight,String position){
+               return players.stream()
+                       .filter(p ->p.getWeight()>=minWeight)
+                       .filter(p->p.getHeight()>=minHeight)
+                       .filter(p->p.getPosition().equalsIgnoreCase(position))
+                       .collect(Collectors.toList());
         }
     }
 

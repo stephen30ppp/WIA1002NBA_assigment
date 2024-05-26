@@ -71,5 +71,49 @@ public class Team {
                     player.getName(), player.getAge(), player.getHeight(),player.getHeight() ,player.getPosition() ,player.getSalary(),player.getPoints() ,player.getRebounds() ,player.getAssists() ,player.getSteals() ,player.getBlocks());
         }
         }
+    public static void calculateAndPrintRankings(List<Players> players) {
+
+        HashMap<String, Double> playerScores = new HashMap<>();
+
+        // Calculate composite score for each player
+        for (Players player : players) {
+            String name = player.getFirstName() + player.getLastName();
+            double compositionScore = compositeScore(player.getPosition(), player);
+            playerScores.put(name, compositionScore);
+        }
+
+        // Sort players based on composite score
+        List<Map.Entry<String, Double>> sortedEntries = new ArrayList<>(playerScores.entrySet());
+        sortedEntries.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        // Print rankings
+        System.out.println(" -- Player Performance Ranking -- ");
+        int rank = 1;
+        for (Map.Entry<String, Double> entry : sortedEntries) {
+            System.out.println("Player : " + entry.getKey());
+            System.out.println("Composite Score : " + entry.getValue());
+            System.out.println("Rank : " + rank);
+            System.out.println();
+            rank++;
+        }
+    }
+
+    private static double compositeScore(String position, Players player) {
+        double compositionScore = 0;
+        double points = player.getPoints();
+        double assists = player.getAssists();
+        double rebounds = player.getRebounds();
+        double steals = player.getSteals();
+        double blocks = player.getBlocks();
+
+        if (position.equalsIgnoreCase("Forward"))
+            compositionScore = ((points / 23 + steals / 1.5 + rebounds / 7 + blocks / 0.3 + assists / 8) * 100) / 5;
+        else if (position.equalsIgnoreCase("Center"))
+            compositionScore = ((points / 10 + blocks / 0.5 + rebounds / 12 + assists / 8 + steals / 1.3) * 100) / 5;
+        else if (position.equalsIgnoreCase("Guard"))
+            compositionScore = (((points / 18) + (assists / 9) + (steals / 1.3) + (rebounds / 5) + (blocks / 0.3)) * 100) / 5;
+
+        return compositionScore;
+    }
     }
 

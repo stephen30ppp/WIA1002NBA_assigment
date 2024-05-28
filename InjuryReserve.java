@@ -20,9 +20,9 @@ public class InjuryReserve {
         System.out.println();
        
     }
-    public injuredPlayer removeInjuredPlayer(String player){
+    public injuredPlayer removeInjuredPlayer(String player, String injury){
         if (!isStackEmpty()) {
-            int indexPlayer= getIndexPlayer(player);
+            int indexPlayer= getIndexPlayer(player, injury);
             if (indexPlayer != -1) {
                 list.get(indexPlayer).setStatus("Cleared to Play");
                 System.out.println("-- Removing Player from Injury Reserve --");
@@ -44,10 +44,10 @@ public class InjuryReserve {
         return list.get(list.size()-1);
     }
     
-    public int getIndexPlayer (String player){
+    public int getIndexPlayer (String player, String injury){
         int i=0;
         for (injuredPlayer injured : list) {
-            if (player.equalsIgnoreCase(injured.getPlayer())){
+            if (player.equalsIgnoreCase(injured.getPlayer()) && injured.getInjury().equalsIgnoreCase(injury)){
                 list.get(i);
                 return i;
             }
@@ -80,4 +80,3 @@ public class InjuryReserve {
         return list;
     }
 }
-

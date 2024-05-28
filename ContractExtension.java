@@ -1,8 +1,15 @@
+package nba;
 
+import java.util.LinkedList;
+
+/**
+ *
+ * @author fwhed
+ */
 public class ContractExtension {
     private java.util.LinkedList <contractPlayer> list = new java.util.LinkedList<>();
-
-    public void addExtendContract (Players player){
+    
+    public void addExtendContract (String player){
         contractPlayer contract = new contractPlayer(player,"Added to Contract Extension Queue");
         list.addLast(contract);
         System.out.println("-- Adding Player to Contract Extension Queue --");
@@ -19,15 +26,15 @@ public class ContractExtension {
     public contractPlayer getContractPlayer(){
         return list.getFirst();
     }
-
+    
     public boolean isQueueEmpty(){
         return list.isEmpty();
     }
-
+    
     public String toString(){
         return "Contract Extension Queue: "+ list.toString();
     }
-
+    
     public void displayContractPlayers() {
         if (isQueueEmpty()) {
             System.out.println("\nNo players are currently on the contract extension.");
@@ -39,38 +46,8 @@ public class ContractExtension {
             }
         }
     }
-}
-
-class contractPlayer <E,S> {
-    private Players player;
-    private String Status;
-
-    public contractPlayer(){}
-
-    public contractPlayer(Players player, String Status){
-        this.player= player;
-        this.Status= Status;
+    
+    public LinkedList<contractPlayer> getList() {
+        return list;
     }
-
-    public Players getPlayer() {
-        return player;
-    }
-
-    public String getPlayerName(){
-        return player.getFirstName() + player.getLastName();
-    }
-
-    public String getStatus(){
-        return Status;
-    }
-
-    public void setStatus(String Status) {
-        this.Status= Status;
-    }
-
-    @Override
-    public String toString(){
-        return "Player: "+ getPlayerName() +"\nStatus: "+getStatus();
-    }
-
 }

@@ -71,6 +71,11 @@ public class Team {
                     player.getName(), player.getAge(), player.getHeight(),player.getHeight() ,player.getPosition() ,player.getSalary(),player.getPoints() ,player.getRebounds() ,player.getAssists() ,player.getSteals() ,player.getBlocks());
         }
         }
+
+    public List<Players> getPlayers() {
+        return players;
+    }
+    
     public static void calculateAndPrintRankings(List<Players> players) {
 
         HashMap<String, Double> playerScores = new HashMap<>();

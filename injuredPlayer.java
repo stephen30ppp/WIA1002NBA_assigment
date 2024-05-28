@@ -8,7 +8,7 @@ package nba;
  *
  * @author fwhed
  */
-public class injuredPlayer<E,I,S> {
+public class injuredPlayer {
     
     private String player;
     private String Injury;

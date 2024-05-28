@@ -41,7 +41,6 @@ public class MainFrame extends Application {
         Button loginButton = createRoundedButton("Login");
         Button signUpButton = createRoundedButton("Sign Up");
         Button directoryButton1 = createRoundedButton("Button 1");
-        Button directoryButton2 = createRoundedButton("Button 2");
         Button extraButton = createRoundedButton("City Graph");
 
         // Set button actions
@@ -58,14 +57,14 @@ public class MainFrame extends Application {
         extraButton.setOnAction(e -> new GraphGUI().show());
 
         // Create a VBox for buttons
-        VBox buttonBox = new VBox(10, loginButton, signUpButton, directoryButton1, directoryButton2, extraButton);
+        VBox buttonBox = new VBox(10, loginButton, signUpButton, directoryButton1, extraButton);
         buttonBox.setPadding(new Insets(50));
         buttonBox.setStyle("-fx-background-color: transparent;");
         buttonBox.setAlignment(Pos.CENTER);  // Center the buttons within the VBox
         buttonBox.setSpacing(10);  // Add spacing between buttons
 
         // Set buttons to the same size
-        for (Button button : new Button[]{loginButton, signUpButton, directoryButton1, directoryButton2, extraButton}) {
+        for (Button button : new Button[]{loginButton, signUpButton, directoryButton1, extraButton}) {
             button.setMaxWidth(Double.MAX_VALUE);
             button.setPrefWidth(200); // Set a preferred width for all buttons
         }

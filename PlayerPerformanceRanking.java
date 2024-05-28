@@ -12,7 +12,7 @@ public class PlayerPerformanceRanking    {
         playerRepository.savePlayer(new Players("Lebron","James","Forward",40,200,90.5,25.5,8.5,7.0,1.0,0.9,20000,true));
     }
 */
-    public static void calculateAndPrintRankings(List<Players> players) {
+    public static List<Map.Entry<String, Double>> calculateRankings(List<Players> players) {
 
         HashMap<String, Double> playerScores = new HashMap<>();
 
@@ -27,10 +27,14 @@ public class PlayerPerformanceRanking    {
         List<Map.Entry<String, Double>> sortedEntries = new ArrayList<>(playerScores.entrySet());
         sortedEntries.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
-        // Print rankings
+        return sortedEntries;
+    }
+    
+
+    public static void printRankings(List<Map.Entry<String, Double>> sortedPlayers) {
         System.out.println(" -- Player Performance Ranking -- ");
         int rank = 1;
-        for (Map.Entry<String, Double> entry : sortedEntries) {
+        for (Map.Entry<String, Double> entry : sortedPlayers) {
             System.out.println("Player : " + entry.getKey());
             System.out.println("Composite Score : " + entry.getValue());
             System.out.println("Rank : " + rank);

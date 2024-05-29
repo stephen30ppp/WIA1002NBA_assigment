@@ -5,16 +5,20 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.Map;
-
 public class MenuFrame {
-    private Map<String, String> userDatabase;
+    private UserRepository userRepository;
 
-    public MenuFrame(Map<String, String> userDatabase) {
-        this.userDatabase = userDatabase;
+    public MenuFrame(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public void show(Stage menuStage) {
@@ -27,14 +31,14 @@ public class MenuFrame {
         Button button4 = createRoundedButton("Button 4");
         Button cityGraphButton = createRoundedButton("City Graph");
         Button button6 = createRoundedButton("Button 6");
-        Button mainFrameButton = createRoundedButton("Main Frame"); // Renamed for clarity
+        Button mainFrameButton = createRoundedButton("Main Frame");
 
         cityGraphButton.setOnAction(e -> new GraphGUI().show());
         mainFrameButton.setOnAction(e -> {
             // Close the current stage
             menuStage.close();
             // Open the MainFrame
-            MainFrame mainFrame = new MainFrame(userDatabase);
+            MainFrame mainFrame = new MainFrame(userRepository);
             Stage mainStage = new Stage();
             try {
                 mainFrame.start(mainStage);
@@ -47,18 +51,18 @@ public class MenuFrame {
         VBox buttonBox = new VBox(10, button1, button2, button3, button4, cityGraphButton, button6, mainFrameButton);
         buttonBox.setPadding(new Insets(50));
         buttonBox.setStyle("-fx-background-color: transparent;");
-        buttonBox.setAlignment(Pos.CENTER);  // Center the buttons within the VBox
-        buttonBox.setSpacing(10);  // Add spacing between buttons
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setSpacing(10);
 
         // Set buttons to the same size
         for (Button button : new Button[]{button1, button2, button3, button4, cityGraphButton, button6, mainFrameButton}) {
             button.setPrefHeight(30);
-            button.setPrefWidth(195); // Set a preferred width for all buttons
+            button.setPrefWidth(195);
         }
 
         // Set background image using a relative path
         BackgroundImage backgroundImage = new BackgroundImage(
-                new Image(getClass().getResource("/views/background1.png").toExternalForm()),
+                new Image(getClass().getResource("/views/background.png").toExternalForm()),
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.DEFAULT,

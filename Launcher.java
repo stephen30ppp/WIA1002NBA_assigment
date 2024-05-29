@@ -2,24 +2,22 @@ package views;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-
-import java.util.HashMap;
-import java.util.Map;
+//import UserRepository;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Launcher extends Application {
-    private static Map<String, String> userDatabase = new HashMap<>();
-
-    public static void main(String[] args) {
-        launch(args);
-    }
+    private static UserRepository userRepository;
 
     @Override
     public void start(Stage primaryStage) {
-        MainFrame mainFrame = new MainFrame(userDatabase);
-        try {
-            mainFrame.start(primaryStage);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        userRepository = new UserRepository();
+        MainFrame mainFrame = new MainFrame(userRepository);
+        mainFrame.start(primaryStage);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

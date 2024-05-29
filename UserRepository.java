@@ -1,14 +1,14 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+package views;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserRepository {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/mydatabase";
-    private static final String USER = "your_db_username";
-    private static final String PASSWORD = "your_db_password";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/login_schema";
+    private static final String USER = "root";
+    private static final String PASSWORD = "MySQL";
 
     public User getUserByUsername(String username) throws SQLException {
         User user = null;
@@ -18,8 +18,8 @@ public class UserRepository {
 
         try {
             connection = getConnection();
-            String sql = "SELECT * FROM users WHERE username = ?";
-            statement = connection.prepareStatement(sql);
+            String query = "SELECT * FROM users WHERE username = ?";
+            statement = connection.prepareStatement(query);
             statement.setString(1, username);
             resultSet = statement.executeQuery();
 
@@ -29,12 +29,31 @@ public class UserRepository {
                         resultSet.getString("password")
                 );
             }
-            closeConnection(connection, statement, resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeConnection(connection, statement, resultSet);
         }
         return user;
     }
+
+    public boolean validateUser(String username, String password) {
+        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+        try  {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
 
     public void saveUser(User user) throws SQLException {
         Connection connection = null;
@@ -42,16 +61,33 @@ public class UserRepository {
 
         try {
             connection = getConnection();
-            String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-            statement = connection.prepareStatement(sql);
+            String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+            statement = connection.prepareStatement(query);
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getPassword());
             statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
             closeConnection(connection, statement, null);
         }
-        catch (SQLException e) {
+    }
+
+    public List<String> getAllUsernames() {
+        List<String> usernames = new ArrayList<>();
+        String query = "SELECT username FROM users";
+        Connection connection = null;
+        try  {
+            connection = getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                usernames.add(resultSet.getString("username"));
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+        return usernames;
     }
 
     private static Connection getConnection() throws SQLException {
@@ -69,4 +105,6 @@ public class UserRepository {
             connection.close();
         }
     }
-    }
+
+
+}

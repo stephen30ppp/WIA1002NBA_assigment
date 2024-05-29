@@ -1,20 +1,15 @@
-package views;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.util.Map;
-
 public class MainFrame extends Application {
     private TextArea userListTextArea;
-    private static Map<String, String> userDatabase;
+    private UserRepository userRepository;
     private Button spursButton;
     private Button sunsButton;
     private Button lakersButton;
@@ -23,8 +18,8 @@ public class MainFrame extends Application {
         // Default constructor required by JavaFX
     }
 
-    public MainFrame(Map<String, String> userDatabase) {
-        MainFrame.userDatabase = userDatabase;
+    public MainFrame(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -50,11 +45,11 @@ public class MainFrame extends Application {
 
         // Set the onLoginSuccess callback
         loginButton.setOnAction(e -> {
-            LoginForm loginForm = new LoginForm(userDatabase);
+            LoginForm loginForm = new LoginForm(userRepository);
             loginForm.setOnLoginSuccess(success -> {
                 if (success) {
                     System.out.println("Login successful!");
-                    MenuFrame menuFrame = new MenuFrame(userDatabase);
+                    MenuFrame menuFrame = new MenuFrame(userRepository);
                     menuFrame.show(new Stage());
                     primaryStage.close();
                 } else {
@@ -65,9 +60,9 @@ public class MainFrame extends Application {
         });
 
         signUpButton.setOnAction(e -> {
-            SignUpForm signUpForm = new SignUpForm(userDatabase, userListTextArea);
+            SignUpForm signUpForm = new SignUpForm(userRepository, userListTextArea);
             signUpForm.setOnSignUpSuccess(() -> {
-                LoginForm newLoginForm = new LoginForm(userDatabase);
+                LoginForm newLoginForm = new LoginForm(userRepository);
                 newLoginForm.show(primaryStage);
             });
             signUpForm.show();
@@ -129,44 +124,6 @@ public class MainFrame extends Application {
 
     private Button createRoundedButton(String text) {
         Button button = new Button(text);
-        button.setStyle("-fx-background-radius: 30; -fx-border-radius: 30; " +
-                "-fx-background-color: #fee12b; -fx-text-fill: white; " +
-                "-fx-font-family: 'Times New Roman'; -fx-font-size: 16px; -fx-font-weight: bold; " +
-                "-fx-padding: 10px 20px;");
-        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #fffdd0; " +
-                "-fx-background-radius: 30; -fx-border-radius: 30; " +
-                "-fx-text-fill: black; " +
-                "-fx-font-family: 'Times New Roman'; -fx-font-size: 16px; -fx-font-weight: bold; " +
-                "-fx-padding: 10px 20px;"));
-        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #fee12b; " +
-                "-fx-background-radius: 30; -fx-border-radius: 30; " +
-                "-fx-text-fill: white; " +
-                "-fx-font-family: 'Times New Roman'; -fx-font-size: 16px; -fx-font-weight: bold; " +
-                "-fx-padding: 10px 20px;"));
-
-        return button;
-    }
-
-    public Node getNode() {
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-        gridPane.setPadding(new Insets(20));
-
-        spursButton = createTeamButton("Spurs");
-        sunsButton = createTeamButton("Suns");
-        lakersButton = createTeamButton("Lakers");
-
-        gridPane.add(spursButton, 0, 0);
-        gridPane.add(sunsButton, 1, 0);
-        gridPane.add(lakersButton, 2, 0);
-
-        return gridPane;
-    }
-
-    private Button createTeamButton(String teamName) {
-        Button button = new Button(teamName);
         button.setStyle("-fx-background-radius: 30; -fx-border-radius: 30; " +
                 "-fx-background-color: #fee12b; -fx-text-fill: white; " +
                 "-fx-font-family: 'Times New Roman'; -fx-font-size: 16px; -fx-font-weight: bold; " +

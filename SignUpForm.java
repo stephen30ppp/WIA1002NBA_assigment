@@ -1,116 +1,88 @@
-package views;
-
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.util.Map;
-
-@FunctionalInterface
-interface OnSignUpSuccessCallback {
-    void onSignUpSuccess();
-}
+import java.sql.SQLException;
 
 public class SignUpForm {
-    private Stage stage;
-    private Map<String, String> userDatabase;
+    private UserRepository userRepository;
     private TextArea userListTextArea;
-    private OnSignUpSuccessCallback onSignUpSuccessCallback;
+    private Runnable onSignUpSuccess;
 
-    public SignUpForm(Map<String, String> userDatabase, TextArea userListTextArea) {
-        this.userDatabase = userDatabase;
+    public SignUpForm(UserRepository userRepository, TextArea userListTextArea) {
+        this.userRepository = userRepository;
         this.userListTextArea = userListTextArea;
-
-        // Create the stage
-        stage = new Stage();
-        stage.setTitle("Sign Up Form");
-
-        // Create the user label
-        Label userLabel = new Label("Username:");
-        userLabel.setLayoutX(50);
-        userLabel.setLayoutY(30);
-
-        // Create the user text field
-        TextField userText = new TextField();
-        userText.setLayoutX(150);
-        userText.setLayoutY(30);
-
-        // Create the password label
-        Label passwordLabel = new Label("Password:");
-        passwordLabel.setLayoutX(50);
-        passwordLabel.setLayoutY(70);
-
-        // Create the password field
-        PasswordField passwordText = new PasswordField();
-        passwordText.setLayoutX(150);
-        passwordText.setLayoutY(70);
-
-        // Create the password strength label
-        Label passwordStrengthLabel = new Label("Password Strength: ");
-        passwordStrengthLabel.setLayoutX(50);
-        passwordStrengthLabel.setLayoutY(110);
-
-        // Add document listener to password field to check strength
-        passwordText.textProperty().addListener((observable, oldValue, newValue) -> {
-            String strength = getPasswordStrength(newValue);
-            passwordStrengthLabel.setText("Password Strength: " + strength);
-        });
-
-        // Create the sign-up button
-        Button signUpButton = new Button("Sign Up");
-        signUpButton.setLayoutX(150);
-        signUpButton.setLayoutY(150);
-        signUpButton.setOnAction(e -> {
-            String username = userText.getText();
-            String password = passwordText.getText();
-
-            if (userDatabase.containsKey(username)) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Username already exists.");
-                alert.showAndWait();
-            } else {
-                userDatabase.put(username, password);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Sign up successful!");
-                alert.showAndWait();
-                userListTextArea.appendText(username + "\n");
-                stage.close();
-                if (onSignUpSuccessCallback != null) {
-                    onSignUpSuccessCallback.onSignUpSuccess();
-                }
-            }
-        });
-
-        // Create a pane and add all elements to it
-        Pane pane = new Pane(userLabel, userText, passwordLabel, passwordText, passwordStrengthLabel, signUpButton);
-        Scene scene = new Scene(pane, 350, 250);
-        stage.setScene(scene);
-    }
-
-    private String getPasswordStrength(String password) {
-        int length = password.length();
-        boolean hasUpper = false, hasLower = false, hasDigit = false, hasSpecial = false;
-
-        for (char c : password.toCharArray()) {
-            if (Character.isUpperCase(c)) hasUpper = true;
-            if (Character.isLowerCase(c)) hasLower = true;
-            if (Character.isDigit(c)) hasDigit = true;
-            if (!Character.isLetterOrDigit(c)) hasSpecial = true;
-        }
-
-        if (length >= 12 && hasUpper && hasLower && hasDigit && hasSpecial) {
-            return "Strong";
-        } else if (length >= 8 && ((hasUpper && hasLower) || (hasLower && hasDigit) || (hasUpper && hasDigit))) {
-            return "Moderate";
-        } else {
-            return "Weak";
-        }
-    }
-
-    public void setOnSignUpSuccess(OnSignUpSuccessCallback onSignUpSuccessCallback) {
-        this.onSignUpSuccessCallback = onSignUpSuccessCallback;
     }
 
     public void show() {
-        stage.show();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("Sign Up Form");
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+        Label userName = new Label("Username:");
+        grid.add(userName, 0, 1);
+
+        TextField userTextField = new TextField();
+        grid.add(userTextField, 1, 1);
+
+        Label pw = new Label("Password:");
+        grid.add(pw, 0, 2);
+
+        PasswordField pwBox = new PasswordField();
+        grid.add(pwBox, 1, 2);
+
+        Button btn = new Button("Sign Up");
+        grid.add(btn, 1, 4);
+
+        final Label signUpStatus = new Label();
+        grid.add(signUpStatus, 1, 6);
+
+        btn.setOnAction(e -> {
+            String username = userTextField.getText();
+            String password = pwBox.getText();
+            User user = new User(username,password);
+            if (!userRepository.validateUser(username,password)) {
+                try {
+                    userRepository.saveUser(user);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                signUpStatus.setText("Sign up successful");
+                updateUserListTextArea();
+                if (onSignUpSuccess != null) {
+                    onSignUpSuccess.run();
+                }
+                primaryStage.close();
+            } else {
+                signUpStatus.setText("Sign up failed: username already exists");
+            }
+        });
+
+        Scene scene = new Scene(grid, 300, 275);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public void setOnSignUpSuccess(Runnable onSignUpSuccess) {
+        this.onSignUpSuccess = onSignUpSuccess;
+    }
+
+    private void updateUserListTextArea() {
+        userListTextArea.clear();
+        for (String username : userRepository.getAllUsernames()) {
+            userListTextArea.appendText(username + "\n");
+        }
     }
 }

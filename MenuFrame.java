@@ -27,13 +27,41 @@ public class MenuFrame {
         // Create buttons
         Button button1 = createRoundedButton("Button 1");
         Button button2 = createRoundedButton("Button 2");
-        Button button3 = createRoundedButton("Button 3");
-        Button button4 = createRoundedButton("Button 4");
+        Button injuryButton = createRoundedButton("Injury Reserve");
+        Button contractButton = createRoundedButton("Contract Extension");
         Button cityGraphButton = createRoundedButton("City Graph");
-        Button button6 = createRoundedButton("Button 6");
+        Button rankButton = createRoundedButton("Player Performance Ranking");
         Button mainFrameButton = createRoundedButton("Main Frame");
 
+        injuryButton.setOnAction(e -> {
+            InjuryReserveForm injuryReserveForm = new InjuryReserveForm();
+            Stage formStage = new Stage();
+            try {
+                injuryReserveForm.start(formStage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        
+        contractButton.setOnAction(e -> {
+            ContractForm contractForm = new ContractForm();
+            Stage formStage = new Stage();
+            try {
+                contractForm.start(formStage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
         cityGraphButton.setOnAction(e -> new GraphGUI().show());
+        rankButton.setOnAction(e -> {
+            RankForm rankForm = new RankForm();
+            Stage formStage = new Stage();
+            try {
+                rankForm.start(formStage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
         mainFrameButton.setOnAction(e -> {
             // Close the current stage
             menuStage.close();
@@ -48,14 +76,14 @@ public class MenuFrame {
         });
 
         // Create a VBox for buttons
-        VBox buttonBox = new VBox(10, button1, button2, button3, button4, cityGraphButton, button6, mainFrameButton);
+        VBox buttonBox = new VBox(10, button1, button2, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton);
         buttonBox.setPadding(new Insets(50));
         buttonBox.setStyle("-fx-background-color: transparent;");
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(10);
 
         // Set buttons to the same size
-        for (Button button : new Button[]{button1, button2, button3, button4, cityGraphButton, button6, mainFrameButton}) {
+        for (Button button : new Button[]{button1, button2, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton}) {
             button.setPrefHeight(30);
             button.setPrefWidth(195);
         }

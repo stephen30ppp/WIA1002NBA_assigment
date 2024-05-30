@@ -1,17 +1,15 @@
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Comparator;
 
 public class PlayerPerformanceRanking    {
-/*
-    public static void main(String[] args) throws SQLException {
-        PlayerRepository playerRepository = new PlayerRepository();
-        playerRepository.savePlayer(new Players("Lebron","James","Forward",40,200,90.5,25.5,8.5,7.0,1.0,0.9,20000,true));
-    }
-*/
+    /*
+        public static void main(String[] args) throws SQLException {
+            PlayerRepository playerRepository = new PlayerRepository();
+            playerRepository.savePlayer(new Players("Lebron","James","Forward",40,200,90.5,25.5,8.5,7.0,1.0,0.9,20000,true));
+        }
+    */
     public static List<Map.Entry<String, Double>> calculateRankings(List<Players> players) {
 
         HashMap<String, Double> playerScores = new HashMap<>();
@@ -25,11 +23,42 @@ public class PlayerPerformanceRanking    {
 
         // Sort players based on composite score
         List<Map.Entry<String, Double>> sortedEntries = new ArrayList<>(playerScores.entrySet());
-        sortedEntries.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        //sortedEntries.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        insertionSort(sortedEntries);
 
         return sortedEntries;
     }
-    
+
+    public static void insertionSort(List<Map.Entry<String, Double>> list) {
+        // To iterate through all the elements
+        for (int i = 1; i < list.size(); i++) {
+            Map.Entry<String, Double> currentEntry = list.get(i);
+            Double currentScore = currentEntry.getValue();
+            int k;
+
+            // Inner loop to arrange the elements before i in ascending order
+            for (k = i-1 ; k >= 0 && list.get(k).getValue() < currentScore ; k--) {
+                list.set(k + 1, list.get(k));
+            }
+            list.set(k + 1, currentEntry);
+        }
+    }
+/*
+    public static void insertionSort(List<Map.Entry<String, Double>> list) {
+
+        // to iterate through all the elements
+        for (int i = 0; i<list.size(); i++) {
+            int current = list[i];
+            int k;
+
+            // inner loop to arrange the elements before i in ascending order
+            for (k=i-1 ; k>=0 && list[k]>current ; k--) {
+                list[k+1] = list[k];  // pushing to the right hand side
+            }
+            list[k+1] = current;
+        }
+    }
+ */
 
     public static void printRankings(List<Map.Entry<String, Double>> sortedPlayers) {
         System.out.println(" -- Player Performance Ranking -- ");
@@ -60,5 +89,6 @@ public class PlayerPerformanceRanking    {
 
         return compositionScore;
     }
+
 }
 

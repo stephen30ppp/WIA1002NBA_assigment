@@ -50,10 +50,10 @@ public class Databaseconnect {
             while (true) {
                 System.out.println("please input number");
                 switch (sc.nextInt()) {
-                    case 1: team.printteam();
+                    case 1: team.printteam();//print all player in team
 //                        calculateAndPrintRankings();
                     break;
-                    case 2:
+                    case 2://add player
                         boolean issuper=false;
                         String insertSQL="INSERT INTO team_players (name,Age,Height,Weight,Position,Salary,Points,Rebounds,Assists,Steals,Blocks) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
                         ResultSet set1=connection.createStatement().executeQuery("select  * from nba_allplayer ");
@@ -107,7 +107,7 @@ public class Databaseconnect {
                         Players newplayer=new Players(position,name,salary,issuper,age,height,weight,points,assistants,rebounds,steals,blocks);
                         team.addPlayer(newplayer);
                         break;
-                    case 3:
+                    case 3://add injury
                         System.out.println("Player:");
                         String p=sc.next();
                         System.out.println("Injury:");
@@ -115,7 +115,7 @@ public class Databaseconnect {
                         injuryReserve.addInjuredPlayer(p,inj);
 
                     break;
-                    case 4:
+                    case 4://find player(dynamic search)
                         System.out.println("please input you want search player infomation");
                         System.out.println("minHeight:");
                         double minHeight=sc.nextDouble();
@@ -125,7 +125,7 @@ public class Databaseconnect {
                         String positioninfo= sc.next();
                         findPlayers(minHeight,minWeight,positioninfo);
                         break;
-                    case 5:
+                    case 5://delet player
                         String deletsql="DELETE FROM team_players WHERE name=?";
                         pstmt =connection.prepareStatement(deletsql);
                         System.out.println("please select players you want to delete");
@@ -137,9 +137,9 @@ public class Databaseconnect {
                         }else {
                             System.out.println("delete fail ");
                         }
-                    case 6:calculateAndPrintRankings();
+                    case 6:calculateAndPrintRankings();// calculat Rank
                         break;
-                    case 7:System.exit(0);
+                    case 7:System.exit(0);//exit
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {

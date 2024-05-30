@@ -1,9 +1,10 @@
 package NBA_Team;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Team {
+
     private final int Max_Players=15;
     private final int Min_Players=10;
     private static final int min_positional_requirement=2;
@@ -23,7 +24,7 @@ public class Team {
             System.out.println("Cannot add player.Salary cap exceeded");
             return false;
         }
-       requirePosition();
+//       requirePosition();
         players.add(player);
         return true;
     }
@@ -58,9 +59,38 @@ public class Team {
             System.out.println("you also need"+(min_positional_requirement-countPlayersByPosition("Forward"))+" Forward in your team");
         }
         if (countPlayersByPosition("Center")<=min_positional_requirement){
-            System.out.println("you also need"+(min_positional_requirement-countPlayersByPosition("Guard"))+" Center in your team");
+            System.out.println("you also need"+(min_positional_requirement-countPlayersByPosition("Center"))+" Center in your team");
         }
     }
+    public static void findPlayers(double minHeight, int minWeight, String position) {
+        List<Players> filteredPlayers = players.stream()
+                .filter(p -> p.getHeight() >= minHeight )
+                .filter(p -> p.getWeight() >= minWeight)
+                .filter(p -> p.getPosition().equalsIgnoreCase(position))
+                .collect(Collectors.toList());
+
+        if (filteredPlayers.isEmpty()) {
+//            return "No players found.";
+            System.out.println("No players found.");
+        }
+
+//        StringBuilder result = new StringBuilder();
+//        for (Players p : filteredPlayers) {
+//            result.append(p.getName()).append(" | ").append(p.getAge()).append(" | ").append(p.getHeight())
+//                    .append(" | ").append(p.getWeight()).append(" | ").append(p.getPosition()).append(" | ")
+//                    .append(p.getSalary()).append(" | ").append(p.getPoints()).append(" | ")
+//                    .append(p.getRebounds()).append(" | ").append(p.getAssists()).append(" | ")
+//                    .append(p.getSteals()).append(" | ").append(p.getBlocks()).append("\n");
+//        }
+        System.out.println("Player List :");
+        System.out.printf("| %-15s | %3s | %6s | %6s | %-8s | %6s | %6s | %8s | %7s | %6s | %6s |%n",
+                "Name", "Age", "Height", "Weight", "Position", "Salary", "Points", "Rebounds", "Assists", "Steals", "Blocks");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------");
+        for (Players player : filteredPlayers) {
+            System.out.printf("| %-15s | %3d | %6.2f | %6d | %-8s | %6d | %6.1f | %8.1f | %7.1f | %6.1f | %6.1f |%n",
+                    player.getName(), player.getAge(), player.getHeight(),player.getWeight() ,player.getPosition() ,player.getSalary(),player.getPoints() ,player.getRebounds() ,player.getAssists() ,player.getSteals() ,player.getBlocks());
+//        return result.toString();
+    }}
     public static void printteam(){
         System.out.println("Player List :");
         System.out.printf("| %-15s | %3s | %6s | %6s | %-8s | %6s | %6s | %8s | %7s | %6s | %6s |%n",
@@ -68,21 +98,35 @@ public class Team {
         System.out.println("-------------------------------------------------------------------------------------------------------------------");
         for (Players player : players) {
             System.out.printf("| %-15s | %3d | %6.2f | %6d | %-8s | %6d | %6.1f | %8.1f | %7.1f | %6.1f | %6.1f |%n",
-                    player.getName(), player.getAge(), player.getHeight(),player.getHeight() ,player.getPosition() ,player.getSalary(),player.getPoints() ,player.getRebounds() ,player.getAssists() ,player.getSteals() ,player.getBlocks());
+                    player.getName(), player.getAge(), player.getHeight(),player.getWeight() ,player.getPosition() ,player.getSalary(),player.getPoints() ,player.getRebounds() ,player.getAssists() ,player.getSteals() ,player.getBlocks());
         }
+        requirePosition();
         }
-
-    public List<Players> getPlayers() {
-        return players;
-    }
-    
-    public static void calculateAndPrintRankings(List<Players> players) {
+        public static void searchplayer(){
+            Scanner sc=new Scanner(System.in);
+            System.out.println("please input the information about the player ");
+            System.out.println("The minHeight:");
+            double minHeight=sc.nextDouble();
+            System.out.println("The minWeight:");
+            int minWeight=sc.nextInt();
+            System.out.println("Position:");
+            String position=sc.next();
+            findPlayers(minHeight,minWeight,position);
+        }
+        public List<Players> printsearchplayer(double minWeight,double minHeight,String position){
+               return players.stream()
+                       .filter(p ->p.getWeight()>=minWeight)
+                       .filter(p->p.getHeight()>=minHeight)
+                       .filter(p->p.getPosition().equalsIgnoreCase(position))
+                       .collect(Collectors.toList());
+        }
+    public static void calculateAndPrintRankings() {
 
         HashMap<String, Double> playerScores = new HashMap<>();
 
         // Calculate composite score for each player
         for (Players player : players) {
-            String name = player.getFirstName() + player.getLastName();
+            String name = player.getName();
             double compositionScore = compositeScore(player.getPosition(), player);
             playerScores.put(name, compositionScore);
         }
@@ -96,7 +140,7 @@ public class Team {
         int rank = 1;
         for (Map.Entry<String, Double> entry : sortedEntries) {
             System.out.println("Player : " + entry.getKey());
-            System.out.println("Composite Score : " + entry.getValue());
+            System.out.printf("Composite Score : %.2f " ,entry.getValue());
             System.out.println("Rank : " + rank);
             System.out.println();
             rank++;

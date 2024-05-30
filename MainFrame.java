@@ -5,14 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class MainFrame extends Application {
     private TextArea userListTextArea;
     private UserRepository userRepository;
-    private Button spursButton;
-    private Button sunsButton;
-    private Button lakersButton;
 
     public MainFrame() {
         // Default constructor required by JavaFX
@@ -49,23 +48,48 @@ public class MainFrame extends Application {
             loginForm.setOnLoginSuccess(success -> {
                 if (success) {
                     System.out.println("Login successful!");
+                    primaryStage.close();                               // added function to close mainFrame when login success
                     MenuFrame menuFrame = new MenuFrame(userRepository);
                     menuFrame.show(new Stage());
-                    primaryStage.close();
+                    //primaryStage.close();
                 } else {
                     System.out.println("Login failed.");
                 }
             });
-            loginForm.show(primaryStage);
+            loginForm.show();
         });
 
         signUpButton.setOnAction(e -> {
             SignUpForm signUpForm = new SignUpForm(userRepository, userListTextArea);
             signUpForm.setOnSignUpSuccess(() -> {
                 LoginForm newLoginForm = new LoginForm(userRepository);
-                newLoginForm.show(primaryStage);
+                newLoginForm.show();
+                // added OnLoginSuccess to make it go from signup form to login form to main menu
+                newLoginForm.setOnLoginSuccess(success -> {
+                    if(success) {
+                        MenuFrame menuFrame = new MenuFrame(userRepository);
+                        primaryStage.close();
+                        menuFrame.show(new Stage());
+
+                    }
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Username already exists.");
+                        alert.showAndWait();
+                    }
+                });
             });
             signUpForm.show();
+
+            //
+            // Set the sign-up stage as a modal window
+/*
+            Dialog<Object> signUpStage = null;
+            signUpStage.initOwner(primaryStage);
+            signUpStage.initModality(Modality.WINDOW_MODAL);
+            signUpStage.initStyle(StageStyle.UTILITY);
+            signUpStage.show();
+            */
+
         });
 
         exitButton.setOnAction(e -> primaryStage.close());

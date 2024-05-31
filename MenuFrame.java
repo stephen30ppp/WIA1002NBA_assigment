@@ -25,13 +25,23 @@ public class MenuFrame {
         menuStage.setTitle("Menu");
 
         // Create buttons
-        Button button1 = createRoundedButton("Button 1");
+        Button searchButton = createRoundedButton("Search for players");
         Button button2 = createRoundedButton("Button 2");
         Button injuryButton = createRoundedButton("Injury Reserve");
         Button contractButton = createRoundedButton("Contract Extension");
         Button cityGraphButton = createRoundedButton("City Graph");
         Button rankButton = createRoundedButton("Player Performance Ranking");
         Button mainFrameButton = createRoundedButton("Main Frame");
+
+        searchButton.setOnAction(e -> {
+            PlayerForm playerForm = new PlayerForm();
+            Stage formStage = new Stage();
+            try {
+                playerForm.start(formStage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
 
         injuryButton.setOnAction(e -> {
             InjuryReserveForm injuryReserveForm = new InjuryReserveForm();
@@ -76,14 +86,14 @@ public class MenuFrame {
         });
 
         // Create a VBox for buttons
-        VBox buttonBox = new VBox(10, button1, button2, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton);
+        VBox buttonBox = new VBox(10, searchButton, button2, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton);
         buttonBox.setPadding(new Insets(50));
         buttonBox.setStyle("-fx-background-color: transparent;");
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(10);
 
         // Set buttons to the same size
-        for (Button button : new Button[]{button1, button2, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton}) {
+        for (Button button : new Button[]{searchButton, button2, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton}) {
             button.setPrefHeight(30);
             button.setPrefWidth(195);
         }

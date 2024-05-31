@@ -1,3 +1,5 @@
+package nbareal2;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,16 +18,10 @@ public class PlayerForm extends Application {
     private ListView<Players> selectedPlayersListView;
     private TextField nameText;
     private TextField positionText;
-    private TextField salaryText;
-    private CheckBox superstarCheckBox;
-    private TextField ageText;
-    private TextField heightText;
-    private TextField weightText;
-    private TextField pointsText;
-    private TextField reboundsText;
-    private TextField assistsText;
-    private TextField stealsText;
-    private TextField blocksText;
+    private TextField minHeightText;
+    private TextField maxHeightText;
+    private TextField minWeightText;
+    private TextField maxWeightText;
 
     @Override
     public void start(Stage primaryStage) {
@@ -49,138 +45,94 @@ public class PlayerForm extends Application {
         positionText.setLayoutX(150);
         positionText.setLayoutY(60);
 
-        Label salaryLabel = new Label("Salary:");
-        salaryLabel.setLayoutX(50);
-        salaryLabel.setLayoutY(90);
-        salaryText = new TextField();
-        salaryText.setLayoutX(150);
-        salaryText.setLayoutY(90);
+        Label minHeightLabel = new Label("Min Height (m):");
+        minHeightLabel.setLayoutX(50);
+        minHeightLabel.setLayoutY(90);
+        minHeightText = new TextField();
+        minHeightText.setLayoutX(150);
+        minHeightText.setLayoutY(90);
 
-        Label superstarLabel = new Label("Superstar:");
-        superstarLabel.setLayoutX(50);
-        superstarLabel.setLayoutY(120);
-        superstarCheckBox = new CheckBox();
-        superstarCheckBox.setLayoutX(150);
-        superstarCheckBox.setLayoutY(120);
+        Label maxHeightLabel = new Label("Max Height (m):");
+        maxHeightLabel.setLayoutX(50);
+        maxHeightLabel.setLayoutY(120);
+        maxHeightText = new TextField();
+        maxHeightText.setLayoutX(150);
+        maxHeightText.setLayoutY(120);
 
-        Label ageLabel = new Label("Age:");
-        ageLabel.setLayoutX(50);
-        ageLabel.setLayoutY(150);
-        ageText = new TextField();
-        ageText.setLayoutX(150);
-        ageText.setLayoutY(150);
+        Label minWeightLabel = new Label("Min Weight (kg):");
+        minWeightLabel.setLayoutX(50);
+        minWeightLabel.setLayoutY(150);
+        minWeightText = new TextField();
+        minWeightText.setLayoutX(150);
+        minWeightText.setLayoutY(150);
 
-        Label heightLabel = new Label("Height:");
-        heightLabel.setLayoutX(50);
-        heightLabel.setLayoutY(180);
-        heightText = new TextField();
-        heightText.setLayoutX(150);
-        heightText.setLayoutY(180);
-
-        Label weightLabel = new Label("Weight:");
-        weightLabel.setLayoutX(50);
-        weightLabel.setLayoutY(210);
-        weightText = new TextField();
-        weightText.setLayoutX(150);
-        weightText.setLayoutY(210);
-
-        Label pointsLabel = new Label("Points:");
-        pointsLabel.setLayoutX(50);
-        pointsLabel.setLayoutY(240);
-        pointsText = new TextField();
-        pointsText.setLayoutX(150);
-        pointsText.setLayoutY(240);
-
-        Label reboundsLabel = new Label("Rebounds:");
-        reboundsLabel.setLayoutX(50);
-        reboundsLabel.setLayoutY(270);
-        reboundsText = new TextField();
-        reboundsText.setLayoutX(150);
-        reboundsText.setLayoutY(270);
-
-        Label assistsLabel = new Label("Assists:");
-        assistsLabel.setLayoutX(50);
-        assistsLabel.setLayoutY(300);
-        assistsText = new TextField();
-        assistsText.setLayoutX(150);
-        assistsText.setLayoutY(300);
-
-        Label stealsLabel = new Label("Steals:");
-        stealsLabel.setLayoutX(50);
-        stealsLabel.setLayoutY(330);
-        stealsText = new TextField();
-        stealsText.setLayoutX(150);
-        stealsText.setLayoutY(330);
-
-        Label blocksLabel = new Label("Blocks:");
-        blocksLabel.setLayoutX(50);
-        blocksLabel.setLayoutY(360);
-        blocksText = new TextField();
-        blocksText.setLayoutX(150);
-        blocksText.setLayoutY(360);
+        Label maxWeightLabel = new Label("Max Weight (kg):");
+        maxWeightLabel.setLayoutX(50);
+        maxWeightLabel.setLayoutY(180);
+        maxWeightText = new TextField();
+        maxWeightText.setLayoutX(150);
+        maxWeightText.setLayoutY(180);
 
         // Create the search button
         Button searchButton = new Button("Search");
         searchButton.setLayoutX(50);
-        searchButton.setLayoutY(390);
+        searchButton.setLayoutY(230);
         searchButton.setOnAction(e -> searchPlayers());
 
         // Create the add player button
         Button addPlayerButton = new Button("Add Selected Player");
         addPlayerButton.setLayoutX(150);
-        addPlayerButton.setLayoutY(390);
+        addPlayerButton.setLayoutY(230);
         addPlayerButton.setOnAction(e -> addSelectedPlayer());
 
         // Create the remove player button
         Button removePlayerButton = new Button("Remove Selected Player");
         removePlayerButton.setLayoutX(300);
-        removePlayerButton.setLayoutY(390);
+        removePlayerButton.setLayoutY(230);
         removePlayerButton.setOnAction(e -> removeSelectedPlayer());
+        
 
         Label stockPlayersLabel = new Label("Stock Players:");
         stockPlayersLabel.setLayoutX(50);
-        stockPlayersLabel.setLayoutY(430); // Adjusted position to be above the playerListView
-
+        stockPlayersLabel.setLayoutY(270);
         Label currentPlayersLabel = new Label("Current Players:");
         currentPlayersLabel.setLayoutX(50);
-        currentPlayersLabel.setLayoutY(575);
+        currentPlayersLabel.setLayoutY(510);
         
         // Create list view to display players
         playerListView = new ListView<>();
         playerListView.setLayoutX(50);
-        playerListView.setLayoutY(450);
-        playerListView.setPrefSize(400, 110);
+        playerListView.setLayoutY(295);
+        playerListView.setPrefSize(400, 200);
 
         // Create list view to display selected players
         selectedPlayersListView = new ListView<>();
         selectedPlayersListView.setLayoutX(50);
-        selectedPlayersListView.setLayoutY(595);
-        selectedPlayersListView.setPrefSize(400, 110);
+        selectedPlayersListView.setLayoutY(535);
+        selectedPlayersListView.setPrefSize(400, 180);
 
         // Create a pane and add all elements to it
         Pane pane = new Pane(
                 nameLabel, nameText,
                 positionLabel, positionText,
-                salaryLabel, salaryText,
-                superstarLabel, superstarCheckBox,
-                ageLabel, ageText,
-                heightLabel, heightText,
-                weightLabel, weightText,
-                pointsLabel, pointsText,
-                reboundsLabel, reboundsText,
-                assistsLabel, assistsText,
-                stealsLabel, stealsText,
-                blocksLabel, blocksText,
+                minHeightLabel, minHeightText,
+                maxHeightLabel, maxHeightText,
+                minWeightLabel, minWeightText,
+                maxWeightLabel, maxWeightText,
                 searchButton, addPlayerButton, removePlayerButton,
                 stockPlayersLabel, currentPlayersLabel, 
                 playerListView, selectedPlayersListView
         );
 
-        Scene scene = new Scene(pane, 500,750); // Adjust the width and height as needed
+        Scene scene = new Scene(pane, 500,750); 
         primaryStage.setScene(scene);
         primaryStage.show();
+        
+        updatePlayerListView(playerList); // Print first all the stock players available 
     }
 
+    
+    // TO TRY AND SEE THE OUTPUT PURPOSE, CAN DELETE AFTER CONNECTED WITH DATABASE
     private void initializePlayerList() {
         playerList.add(new Players("Guard", "Stephen Curry", 45780966, true, 35, 6.2, 185, 29.3, 6.3, 5.4, 1.3, 0.4));
         playerList.add(new Players("Forward", "LeBron James", 41180544, true, 38, 6.9, 250, 25.4, 7.9, 7.6, 1.1, 0.6));
@@ -189,47 +141,54 @@ public class PlayerForm extends Application {
         playerList.add(new Players("Center", "Joel Embiid", 33456789, true, 29, 7.0, 280, 28.7, 3.7, 11.2, 1.0, 1.7));
     }
 
+    
     private void searchPlayers() {
+        try {
+            if (!minHeightText.getText().isEmpty()) {
+                double minHeight = Double.parseDouble(minHeightText.getText());
+            }
+            if (!maxHeightText.getText().isEmpty()) {
+                double maxHeight = Double.parseDouble(maxHeightText.getText());
+            }
+            if (!minWeightText.getText().isEmpty()) {
+                double minWeight = Integer.parseInt(minWeightText.getText());
+            }
+            if (!maxWeightText.getText().isEmpty()) {
+                double maxWeight = Integer.parseInt(maxWeightText.getText());
+            }
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a valid number.");
+            alert.showAndWait();
+            return; 
+        }
+
         List<Players> filteredPlayers = playerList.stream().filter(player -> {
             boolean matches = true;
 
             if (!nameText.getText().isEmpty()) {
                 matches &= player.getName().toLowerCase().contains(nameText.getText().toLowerCase());
             }
+
             if (!positionText.getText().isEmpty()) {
                 matches &= player.getPosition().toLowerCase().contains(positionText.getText().toLowerCase());
             }
-            if (!salaryText.getText().isEmpty()) {
-                matches &= player.getSalary() == Integer.parseInt(salaryText.getText());
+
+            if (!minHeightText.getText().isEmpty()) {
+                matches &= player.getHeight() >= Double.parseDouble(minHeightText.getText());
             }
-            if (superstarCheckBox.isSelected()) {
-                matches &= player.isIssuperstar();
+
+            if (!maxHeightText.getText().isEmpty()) {
+                matches &= player.getHeight() <= Double.parseDouble(maxHeightText.getText());
             }
-            if (!ageText.getText().isEmpty()) {
-                matches &= player.getAge() == Integer.parseInt(ageText.getText());
+
+            if (!minWeightText.getText().isEmpty()) {
+                matches &= player.getWeight() >= Integer.parseInt(minWeightText.getText());
             }
-            if (!heightText.getText().isEmpty()) {
-                matches &= player.getHeight() == Double.parseDouble(heightText.getText());
+
+            if (!maxWeightText.getText().isEmpty()) {
+                matches &= player.getWeight() <= Integer.parseInt(maxWeightText.getText());
             }
-            if (!weightText.getText().isEmpty()) {
-                matches &= player.getWeight() == Integer.parseInt(weightText.getText());
-            }
-            if (!pointsText.getText().isEmpty()) {
-                matches &= player.getPoints() == Double.parseDouble(pointsText.getText());
-            }
-            if (!reboundsText.getText().isEmpty()) {
-                matches &= player.getRebounds() == Double.parseDouble(reboundsText.getText());
-            }
-            if (!assistsText.getText().isEmpty()) {
-                matches &= player.getAssists() == Double.parseDouble(assistsText.getText());
-            }
-            if (!stealsText.getText().isEmpty()) {
-                matches &= player.getSteals() == Double.parseDouble(stealsText.getText());
-            }
-            if (!blocksText.getText().isEmpty()) {
-                matches &= player.getBlocks() == Double.parseDouble(blocksText.getText());
-            }
-            
+
             return matches;
         }).collect(Collectors.toList());
 
@@ -239,8 +198,13 @@ public class PlayerForm extends Application {
     private void addSelectedPlayer() {
         Players selectedPlayer = playerListView.getSelectionModel().getSelectedItem();
         if (selectedPlayer != null) {
-            selectedPlayers.add(selectedPlayer);
-            updateSelectedPlayersListView();
+            if (selectedPlayers.contains(selectedPlayer)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Player has already been added.");
+                alert.showAndWait();
+            } else {
+                selectedPlayers.add(selectedPlayer);
+                updateSelectedPlayersListView();
+            }
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "No player selected.");
             alert.showAndWait();
@@ -269,16 +233,10 @@ public class PlayerForm extends Application {
     private void clearInputFields() {
         nameText.clear();
         positionText.clear();
-        salaryText.clear();
-        superstarCheckBox.setSelected(false);
-        ageText.clear();
-        heightText.clear();
-        weightText.clear();
-        pointsText.clear();
-        reboundsText.clear();
-        assistsText.clear();
-        stealsText.clear();
-        blocksText.clear();
+        minHeightText.clear();
+        maxHeightText.clear();
+        minWeightText.clear();
+        maxWeightText.clear();
     }
 
     public static void main(String[] args) {

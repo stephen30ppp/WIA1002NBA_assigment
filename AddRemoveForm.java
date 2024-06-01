@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
 public class AddRemoveForm extends Application {
     private List<Players> playerList = new ArrayList<>();
     private List<Players> selectedPlayers = new ArrayList<>();
-    private ListView<Players> playerListView;
+    private ListView<String> playerListView;  // Changed to ListView<String>
     private ListView<Players> selectedPlayersListView;
     private TextField nameText;
     private TextField positionText;
@@ -211,8 +211,9 @@ public class AddRemoveForm extends Application {
     }
 
     private void addSelectedPlayer() {
-        Players selectedPlayer = playerListView.getSelectionModel().getSelectedItem();
-        if (selectedPlayer != null) {
+        int selectedIndex = playerListView.getSelectionModel().getSelectedIndex();
+        if (selectedIndex != -1) {
+            Players selectedPlayer = playerList.get(selectedIndex);
             if (!selectedPlayers.contains(selectedPlayer)) {
                 selectedPlayers.add(selectedPlayer);
                 updateSelectedPlayersListView();
@@ -227,8 +228,9 @@ public class AddRemoveForm extends Application {
     }
 
     private void removeSelectedPlayer() {
-        Players selectedPlayer = selectedPlayersListView.getSelectionModel().getSelectedItem();
-        if (selectedPlayer != null) {
+        int selectedIndex = selectedPlayersListView.getSelectionModel().getSelectedIndex();
+        if (selectedIndex != -1) {
+            Players selectedPlayer = selectedPlayers.get(selectedIndex);
             selectedPlayers.remove(selectedPlayer);
             updateSelectedPlayersListView();
         } else {
@@ -238,8 +240,9 @@ public class AddRemoveForm extends Application {
     }
 
     private void removeStockPlayer() {
-        Players selectedPlayer = playerListView.getSelectionModel().getSelectedItem();
-        if (selectedPlayer != null) {
+        int selectedIndex = playerListView.getSelectionModel().getSelectedIndex();
+        if (selectedIndex != -1) {
+            Players selectedPlayer = playerList.get(selectedIndex);
             playerList.remove(selectedPlayer);
             updatePlayerListView(playerList);
         } else {
@@ -249,7 +252,10 @@ public class AddRemoveForm extends Application {
     }
 
     private void updatePlayerListView(List<Players> players) {
-        playerListView.getItems().setAll(players);
+        List<String> playerNames = players.stream()
+                .map(Players::getNameOnly)
+                .collect(Collectors.toList());
+        playerListView.setItems(FXCollections.observableArrayList(playerNames));
     }
 
     private void updateSelectedPlayersListView() {

@@ -25,8 +25,8 @@ public class MenuFrame {
         menuStage.setTitle("Menu");
 
         // Create buttons
-        Button searchButton = createRoundedButton("Search for players");
-        Button button2 = createRoundedButton("Button 2");
+        Button searchButton = createRoundedButton("Search for Players");
+        Button addRemoveButton = createRoundedButton("Add & Remove Players");
         Button injuryButton = createRoundedButton("Injury Reserve");
         Button contractButton = createRoundedButton("Contract Extension");
         Button cityGraphButton = createRoundedButton("City Graph");
@@ -38,6 +38,16 @@ public class MenuFrame {
             Stage formStage = new Stage();
             try {
                 playerForm.start(formStage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        addRemoveButton.setOnAction(e -> {
+            AddRemoveForm addRemoveForm = new AddRemoveForm();
+            Stage formStage = new Stage();
+            try {
+                addRemoveForm.start(formStage);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -86,14 +96,14 @@ public class MenuFrame {
         });
 
         // Create a VBox for buttons
-        VBox buttonBox = new VBox(10, searchButton, button2, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton);
+        VBox buttonBox = new VBox(10, searchButton, addRemoveButton, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton);
         buttonBox.setPadding(new Insets(50));
         buttonBox.setStyle("-fx-background-color: transparent;");
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(10);
 
         // Set buttons to the same size
-        for (Button button : new Button[]{searchButton, button2, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton}) {
+        for (Button button : new Button[]{searchButton, addRemoveButton, injuryButton, contractButton, cityGraphButton, rankButton, mainFrameButton}) {
             button.setPrefHeight(30);
             button.setPrefWidth(195);
         }

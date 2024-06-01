@@ -172,4 +172,13 @@ public class Players {
     public void setIssuperstar(boolean issuperstar) {
         this.issuperstar = issuperstar;
     }
+    
+    public String getNameOnly() {
+        return name;
+    }
+    
+    @Override
+    public String toString() {
+        return "Players{" + "Position=" + Position + ", name=" + name + ", salary=" + salary + ", issuperstar=" + issuperstar + ", age=" + age + ", height=" + height + ", weight=" + weight + ", points=" + points + ", rebounds=" + rebounds + ", assists=" + assists + ", steals=" + steals + ", blocks=" + blocks + '}';
+    }
 }

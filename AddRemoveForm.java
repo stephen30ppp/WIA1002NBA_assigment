@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 public class AddRemoveForm extends Application {
     private List<Players> playerList = new ArrayList<>();
     private List<Players> selectedPlayers = new ArrayList<>();
-    private ListView<String> playerListView;  // Changed to ListView<String>
+    private ListView<String> playerListView;
     private ListView<Players> selectedPlayersListView;
     private TextField nameText;
     private TextField positionText;
@@ -31,6 +30,17 @@ public class AddRemoveForm extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Add & Remove Player Form");
+
+        // Initialize some players
+        playerList.add(new Players("Guard", "Stephen Curry", 45000000, true, 35, 1.91, 86, 29.3, 5.3, 6.3, 1.2, 0.4));
+        playerList.add(new Players("Forward", "LeBron James", 41000000, true, 39, 2.06, 113, 25.0, 7.8, 7.9, 1.1, 0.6));
+        playerList.add(new Players("Center", "Nikola Jokic", 47000000, true, 28, 2.11, 129, 26.4, 10.8, 8.3, 1.3, 0.7));
+        playerList.add(new Players("Guard", "Stephen Curry", 45000000, true, 35, 1.91, 86, 29.3, 5.3, 6.3, 1.2, 0.4));
+        playerList.add(new Players("Forward", "LeBron James", 41000000, true, 39, 2.06, 113, 25.0, 7.8, 7.9, 1.1, 0.6));
+        playerList.add(new Players("Center", "Nikola Jokic", 47000000, true, 28, 2.11, 129, 26.4, 10.8, 8.3, 1.3, 0.7));
+        playerList.add(new Players("Guard", "Stephen Curry", 45000000, true, 35, 1.91, 86, 29.3, 5.3, 6.3, 1.2, 0.4));
+        playerList.add(new Players("Forward", "LeBron James", 41000000, true, 39, 2.06, 113, 25.0, 7.8, 7.9, 1.1, 0.6));
+        playerList.add(new Players("Center", "Nikola Jokic", 47000000, true, 28, 2.11, 129, 26.4, 10.8, 8.3, 1.3, 0.7));
 
         // Create labels and text fields for player attributes
         Label nameLabel = new Label("Player Name:");
@@ -119,47 +129,37 @@ public class AddRemoveForm extends Application {
 
         // Create the add player button
         Button addPlayerButton = new Button("Add Player");
-        addPlayerButton.setLayoutX(50);
-        addPlayerButton.setLayoutY(400);
+        addPlayerButton.setLayoutX(370);
+        addPlayerButton.setLayoutY(360);
         addPlayerButton.setOnAction(e -> addPlayer());
-
-        // Create the remove player button for stock players list
-        Button removeStockPlayerButton = new Button("Remove Player");
-        removeStockPlayerButton.setLayoutX(350);
-        removeStockPlayerButton.setLayoutY(400);
-        removeStockPlayerButton.setOnAction(e -> removeStockPlayer());
-        
-        // Create the select player button
-        Button selectPlayerButton = new Button("Select Player");
-        selectPlayerButton.setLayoutX(250);
-        selectPlayerButton.setLayoutY(400);
-        selectPlayerButton.setOnAction(e -> addSelectedPlayer());
 
         // Create the remove player button for current players list
         Button removePlayerButton = new Button("Remove Selected Player");
         removePlayerButton.setLayoutX(305);
-        removePlayerButton.setLayoutY(600);
+        removePlayerButton.setLayoutY(590);
         removePlayerButton.setOnAction(e -> removeSelectedPlayer());
 
         Label stockPlayersLabel = new Label("Players List:");
         stockPlayersLabel.setLayoutX(50);
-        stockPlayersLabel.setLayoutY(430); 
+        stockPlayersLabel.setLayoutY(410);
 
         Label currentPlayersLabel = new Label("Team Players:");
         currentPlayersLabel.setLayoutX(50);
-        currentPlayersLabel.setLayoutY(630);
+        currentPlayersLabel.setLayoutY(600);
 
         // Create list view to display players
         playerListView = new ListView<>();
         playerListView.setLayoutX(50);
-        playerListView.setLayoutY(450);
-        playerListView.setPrefSize(400, 110);
+        playerListView.setLayoutY(435);
+        playerListView.setPrefSize(400, 130);
 
         // Create list view to display selected players
         selectedPlayersListView = new ListView<>();
         selectedPlayersListView.setLayoutX(50);
-        selectedPlayersListView.setLayoutY(650);
-        selectedPlayersListView.setPrefSize(400, 110);
+        selectedPlayersListView.setLayoutY(625);
+        selectedPlayersListView.setPrefSize(400, 130);
+
+        updatePlayerListView(playerList);
 
         // Create a pane and add all elements to it
         Pane pane = new Pane(
@@ -175,12 +175,12 @@ public class AddRemoveForm extends Application {
                 assistsLabel, assistsText,
                 stealsLabel, stealsText,
                 blocksLabel, blocksText,
-                addPlayerButton, selectPlayerButton, removePlayerButton, removeStockPlayerButton,
+                addPlayerButton, removePlayerButton,
                 stockPlayersLabel, currentPlayersLabel,
                 playerListView, selectedPlayersListView
         );
 
-        Scene scene = new Scene(pane, 500, 800); // Adjust the width and height as needed
+        Scene scene = new Scene(pane, 500, 800); 
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -201,28 +201,11 @@ public class AddRemoveForm extends Application {
             double blocks = Double.parseDouble(blocksText.getText());
 
             Players newPlayer = new Players(position, name, salary, isSuperstar, age, height, weight, points, rebounds, assists, steals, blocks);
-            playerList.add(newPlayer);
-            updatePlayerListView(playerList);
+            selectedPlayers.add(newPlayer);
+            updateSelectedPlayersListView();
             clearInputFields();
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "There is an invalid input. Please check each information you input.");
-            alert.showAndWait();
-        }
-    }
-
-    private void addSelectedPlayer() {
-        int selectedIndex = playerListView.getSelectionModel().getSelectedIndex();
-        if (selectedIndex != -1) {
-            Players selectedPlayer = playerList.get(selectedIndex);
-            if (!selectedPlayers.contains(selectedPlayer)) {
-                selectedPlayers.add(selectedPlayer);
-                updateSelectedPlayersListView();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Player has already been selected.");
-                alert.showAndWait();
-            }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "No player selected.");
             alert.showAndWait();
         }
     }
@@ -233,18 +216,6 @@ public class AddRemoveForm extends Application {
             Players selectedPlayer = selectedPlayers.get(selectedIndex);
             selectedPlayers.remove(selectedPlayer);
             updateSelectedPlayersListView();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "No player selected.");
-            alert.showAndWait();
-        }
-    }
-
-    private void removeStockPlayer() {
-        int selectedIndex = playerListView.getSelectionModel().getSelectedIndex();
-        if (selectedIndex != -1) {
-            Players selectedPlayer = playerList.get(selectedIndex);
-            playerList.remove(selectedPlayer);
-            updatePlayerListView(playerList);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "No player selected.");
             alert.showAndWait();

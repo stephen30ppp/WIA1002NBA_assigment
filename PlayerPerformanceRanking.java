@@ -65,7 +65,7 @@ public class PlayerPerformanceRanking    {
         int rank = 1;
         for (Map.Entry<String, Double> entry : sortedPlayers) {
             System.out.println("Player : " + entry.getKey());
-            System.out.println("Composite Score : " + entry.getValue());
+            System.out.printf("Composite Score : %.2f\n" ,entry.getValue());
             System.out.println("Rank : " + rank);
             System.out.println();
             rank++;

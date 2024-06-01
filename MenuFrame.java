@@ -34,10 +34,10 @@ public class MenuFrame {
         Button mainFrameButton = createRoundedButton("Main Frame");
 
         searchButton.setOnAction(e -> {
-            PlayerForm playerForm = new PlayerForm();
+            SearchForm searchForm = new SearchForm();
             Stage formStage = new Stage();
             try {
-                playerForm.start(formStage);
+                searchForm.start(formStage);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

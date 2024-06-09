@@ -15,7 +15,15 @@ public class Players {
     private double blocks;
 
 
-    public Players(){}
+    public Players(String position, String name, int salary, int age, double height, int weight,boolean issuperstar){
+        this.Position=position;
+        this.name=name;
+        this.salary=salary;
+        this.age=age;
+        this.height=height;
+        this.weight=weight;
+        this.issuperstar=issuperstar;
+    }
     public Players(String Position,String name,int salary,boolean issuperstar,int age,double height,int weight,double points,double assists,double rebounds,double steals,double blocks){
         this.Position=Position;
         this.name=name;
@@ -222,5 +230,8 @@ public class Players {
      */
     public void setBlocks(double blocks) {
         this.blocks = blocks;
+    }
+    public String getNameOnly() {
+        return name;
     }
 }

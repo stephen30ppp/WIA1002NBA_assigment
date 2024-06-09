@@ -57,12 +57,16 @@ public class SignUpForm {
         btn.setOnAction(e -> {
             String username = userTextField.getText();
             String password = pwBox.getText();
+            String strength = getPasswordStrength(password);
             User user = new User(username, password);
-            if(Objects.equals(username, "") || Objects.equals(password, "")){         // added this because   before this can login with empty username and password
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid username.");
+
+            if (Objects.equals(username, "") || Objects.equals(password, "")) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid username or password.");
                 alert.showAndWait();
-            }
-            else {
+            } else if ("Weak".equals(strength)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "The password is weak. Login failed.");
+                alert.showAndWait();
+            } else {
                 if (!userRepository.validateUser(username, password)) {
                     try {
                         userRepository.saveUser(user);
@@ -121,5 +125,3 @@ public class SignUpForm {
         }
     }
 }
-
-

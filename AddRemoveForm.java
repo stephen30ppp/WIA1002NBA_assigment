@@ -27,7 +27,7 @@ public class AddRemoveForm extends Application {
     private TextField stealsText;
     private TextField blocksText;
 
-    private static final int MAX_PLAYERS = 2;
+    private static final int MAX_PLAYERS = 15;
     private static final int MIN_PLAYERS = 10;
     private static final int MIN_POS_REQUIREMENT = 2;
     private static final double SALARY_CAP = 20000;
@@ -245,6 +245,11 @@ public class AddRemoveForm extends Application {
             requirePosition();
             return false;
         }
+        if (selectedPlayers.size() == MIN_PLAYERS && checkPositionalRequirements() == false) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot remove player. A team should consist of at least 2 Guards, Forwards and Centers");
+            alert.showAndWait();
+            return false;
+        }
         int selectedIndex = selectedPlayersListView.getSelectionModel().getSelectedIndex();
         if (selectedIndex != -1) {
             Players selectedPlayer = selectedPlayers.get(selectedIndex);
@@ -255,6 +260,12 @@ public class AddRemoveForm extends Application {
             alert.showAndWait();
         }
         return true;
+    }
+    
+    public static boolean checkPositionalRequirements(){
+        return countPlayersByPosition("Guard") >= MIN_POS_REQUIREMENT&&
+               countPlayersByPosition("Forward") >= MIN_POS_REQUIREMENT&&
+               countPlayersByPosition("Center") >= MIN_POS_REQUIREMENT;
     }
 
     private void updatePlayerListView(List<Players> players) {

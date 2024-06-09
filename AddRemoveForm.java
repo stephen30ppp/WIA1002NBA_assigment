@@ -239,20 +239,22 @@ public class AddRemoveForm extends Application {
     }
 
     private boolean removeSelectedPlayer() {
-        if (selectedPlayers.size() == MIN_PLAYERS) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot remove player. A team should consist of at least " + MIN_PLAYERS + " players");
-            alert.showAndWait();
-            requirePosition();
-            return false;
-        }
-        if (selectedPlayers.size() == MIN_PLAYERS && checkPositionalRequirements() == false) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot remove player. A team should consist of at least 2 Guards, Forwards and Centers");
-            alert.showAndWait();
-            return false;
-        }
         int selectedIndex = selectedPlayersListView.getSelectionModel().getSelectedIndex();
         if (selectedIndex != -1) {
+            if (selectedPlayers.size() == MIN_PLAYERS) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot remove player. A team should consist of at least " + MIN_PLAYERS + " players");
+                alert.showAndWait();
+                requirePosition();
+                return false;
+            }
             Players selectedPlayer = selectedPlayers.get(selectedIndex);
+            selectedPlayers.remove(selectedPlayer);
+            if (checkPositionalRequirements() == false && selectedPlayers.size() >= MIN_PLAYERS) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot remove player. A team should consist of at least 2 Guards, Forwards and Centers");
+                alert.showAndWait();
+                selectedPlayers.add(selectedPlayer);
+                return false;
+            }
             selectedPlayers.remove(selectedPlayer);
             updateSelectedPlayersListView();
         } else {

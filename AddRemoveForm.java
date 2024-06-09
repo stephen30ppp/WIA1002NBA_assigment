@@ -1,16 +1,27 @@
+package views;
+
+import NBA_Team.Players;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javafx.collections.FXCollections;
 
 public class AddRemoveForm extends Application {
-    private List<Players> playerList = new ArrayList<>();
+    private static final String URL1="jdbc:mysql://127.0.0.1:3306/nba_player";
+    private static final String USED="root";
+    private static final String PASSWORD="Xyg66666";
+    private List<String> playerNames = new ArrayList<>();
     private List<Players> selectedPlayers = new ArrayList<>();
     private ListView<String> playerListView;
     private ListView<Players> selectedPlayersListView;
@@ -30,17 +41,6 @@ public class AddRemoveForm extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Add & Remove Player Form");
-
-        // Initialize some players
-        playerList.add(new Players("Guard", "Stephen Curry", 45000000, true, 35, 1.91, 86, 29.3, 5.3, 6.3, 1.2, 0.4));
-        playerList.add(new Players("Forward", "LeBron James", 41000000, true, 39, 2.06, 113, 25.0, 7.8, 7.9, 1.1, 0.6));
-        playerList.add(new Players("Center", "Nikola Jokic", 47000000, true, 28, 2.11, 129, 26.4, 10.8, 8.3, 1.3, 0.7));
-        playerList.add(new Players("Guard", "Stephen Curry", 45000000, true, 35, 1.91, 86, 29.3, 5.3, 6.3, 1.2, 0.4));
-        playerList.add(new Players("Forward", "LeBron James", 41000000, true, 39, 2.06, 113, 25.0, 7.8, 7.9, 1.1, 0.6));
-        playerList.add(new Players("Center", "Nikola Jokic", 47000000, true, 28, 2.11, 129, 26.4, 10.8, 8.3, 1.3, 0.7));
-        playerList.add(new Players("Guard", "Stephen Curry", 45000000, true, 35, 1.91, 86, 29.3, 5.3, 6.3, 1.2, 0.4));
-        playerList.add(new Players("Forward", "LeBron James", 41000000, true, 39, 2.06, 113, 25.0, 7.8, 7.9, 1.1, 0.6));
-        playerList.add(new Players("Center", "Nikola Jokic", 47000000, true, 28, 2.11, 129, 26.4, 10.8, 8.3, 1.3, 0.7));
 
         // Create labels and text fields for player attributes
         Label nameLabel = new Label("Player Name:");
@@ -159,7 +159,7 @@ public class AddRemoveForm extends Application {
         selectedPlayersListView.setLayoutY(625);
         selectedPlayersListView.setPrefSize(400, 130);
 
-        updatePlayerListView(playerList);
+        updatePlayerListViewFromDatabase();
 
         // Create a pane and add all elements to it
         Pane pane = new Pane(
@@ -180,7 +180,7 @@ public class AddRemoveForm extends Application {
                 playerListView, selectedPlayersListView
         );
 
-        Scene scene = new Scene(pane, 500, 800); 
+        Scene scene = new Scene(pane, 500, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -202,6 +202,7 @@ public class AddRemoveForm extends Application {
 
             Players newPlayer = new Players(position, name, salary, isSuperstar, age, height, weight, points, rebounds, assists, steals, blocks);
             selectedPlayers.add(newPlayer);
+            addPlayerToDatabase(newPlayer);
             updateSelectedPlayersListView();
             clearInputFields();
         } catch (NumberFormatException e) {
@@ -215,6 +216,7 @@ public class AddRemoveForm extends Application {
         if (selectedIndex != -1) {
             Players selectedPlayer = selectedPlayers.get(selectedIndex);
             selectedPlayers.remove(selectedPlayer);
+            removePlayerFromDatabase(selectedPlayer);
             updateSelectedPlayersListView();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "No player selected.");
@@ -222,11 +224,45 @@ public class AddRemoveForm extends Application {
         }
     }
 
-    private void updatePlayerListView(List<Players> players) {
-        List<String> playerNames = players.stream()
-                .map(Players::getNameOnly)
-                .collect(Collectors.toList());
+    private void updatePlayerListViewFromDatabase() {
+        playerNames.clear();
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT name FROM nba_allplayer");
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                playerNames.add(rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         playerListView.setItems(FXCollections.observableArrayList(playerNames));
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM team_players");
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Players player = new Players(
+                        rs.getString("position"),
+                        rs.getString("name"),
+                        rs.getInt("salary"),
+                        rs.getInt("salary")>=2000?true:false,
+                        rs.getInt("age"),
+                        rs.getDouble("height"),
+                        rs.getInt("weight"),
+                        rs.getDouble("points"),
+                        rs.getDouble("rebounds"),
+                        rs.getDouble("assists"),
+                        rs.getDouble("steals"),
+                        rs.getDouble("blocks")
+                );
+                selectedPlayers.add(player);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        selectedPlayersListView.setItems(FXCollections.observableArrayList(selectedPlayers));
     }
 
     private void updateSelectedPlayersListView() {
@@ -246,6 +282,50 @@ public class AddRemoveForm extends Application {
         assistsText.clear();
         stealsText.clear();
         blocksText.clear();
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL1,USED,PASSWORD);
+    }
+
+    private void addPlayerToDatabase(Players player) {
+        String insertSQL = "INSERT INTO team_players (name, position, salary, age, height, weight, points, rebounds, assists, steals, blocks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+            pstmt.setString(1, player.getName());
+            pstmt.setString(2, player.getPosition());
+            pstmt.setInt(3, player.getSalary());
+            pstmt.setInt(4, player.getAge());
+            pstmt.setDouble(5, player.getHeight());
+            pstmt.setInt(6, player.getWeight());
+            pstmt.setDouble(7, player.getPoints());
+            pstmt.setDouble(8, player.getRebounds());
+            pstmt.setDouble(9, player.getAssists());
+            pstmt.setDouble(10, player.getSteals());
+            pstmt.setDouble(11, player.getBlocks());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removePlayerFromDatabase(Players player) {
+        String deleteSQL = "DELETE FROM team_players WHERE name = ? AND position = ? AND salary = ?  AND age = ? AND height = ? AND weight = ? AND points = ? AND rebounds = ? AND assists = ? AND steals = ? AND blocks = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {
+            pstmt.setString(1, player.getName());
+            pstmt.setString(2, player.getPosition());
+            pstmt.setInt(3, player.getSalary());
+            pstmt.setInt(4, player.getAge());
+            pstmt.setDouble(5, player.getHeight());
+            pstmt.setInt(6, player.getWeight());
+            pstmt.setDouble(7, player.getPoints());
+            pstmt.setDouble(8, player.getRebounds());
+            pstmt.setDouble(9, player.getAssists());
+            pstmt.setDouble(10, player.getSteals());
+            pstmt.setDouble(11, player.getBlocks());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

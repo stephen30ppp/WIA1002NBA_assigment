@@ -8,6 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 import java.nio.file.Files;
@@ -33,7 +34,7 @@ public class GraphGUI {
 
         // Create an ImageView for displaying the image
         ImageView imageView = new ImageView();
-        String imagePath = "file:C:\\Users\\Thrisha\\IdeaProjects\\untitled\\src\\views\\city.gif"; // Use an absolute path here
+        String imagePath = "file:C:\\Users\\26950\\IdeaProjects\\WIA1002assigmentcopy\\src\\views\\city.gif"; // Use an absolute path here
 
         // Check if the file exists
         if (Files.exists(Paths.get(imagePath.replace("file:", "")))) {

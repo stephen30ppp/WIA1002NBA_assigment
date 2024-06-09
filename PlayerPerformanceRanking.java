@@ -1,3 +1,7 @@
+package views;
+
+import NBA_Team.Players;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +20,7 @@ public class PlayerPerformanceRanking    {
 
         // Calculate composite score for each player
         for (Players player : players) {
-            String name = player.getFirstName() + player.getLastName();
+            String name = player.getName();
             double compositionScore = compositeScore(player.getPosition(), player);
             playerScores.put(name, compositionScore);
         }
@@ -91,4 +95,3 @@ public class PlayerPerformanceRanking    {
     }
 
 }
-

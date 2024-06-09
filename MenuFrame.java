@@ -1,5 +1,6 @@
 package views;
 
+import NBA_Team.InjuryReserve;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -34,10 +35,10 @@ public class MenuFrame {
         Button mainFrameButton = createRoundedButton("Main Frame");
 
         searchButton.setOnAction(e -> {
-            SearchForm searchForm = new SearchForm();
+            PlayerForm playerForm = new PlayerForm();
             Stage formStage = new Stage();
             try {
-                searchForm.start(formStage);
+                playerForm.start(formStage);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -62,7 +63,7 @@ public class MenuFrame {
                 ex.printStackTrace();
             }
         });
-        
+
         contractButton.setOnAction(e -> {
             ContractForm contractForm = new ContractForm();
             Stage formStage = new Stage();

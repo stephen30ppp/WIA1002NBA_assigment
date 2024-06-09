@@ -1,26 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package guinba;
+package views;
 
-/**
- *
- * @author fwhed
- */
-
+import NBA_Team.InjuryReserve;
+import NBA_Team.injuredPlayer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import nba.InjuryReserve;
-import nba.injuredPlayer;
+
+import java.sql.*;
 import java.util.EmptyStackException;
 
 public class InjuryReserveForm extends Application {
-    private InjuryReserve injuryReserve = new InjuryReserve();
     private TextArea injuredPlayersTextArea;
+    private static final String URL1="jdbc:mysql://127.0.0.1:3306/nba_player";
+    private static final String USED="root";
+    private static final String PASSWORD="Xyg66666";
 
     @Override
     public void start(Stage primaryStage) {
@@ -42,9 +37,8 @@ public class InjuryReserveForm extends Application {
         TextField injuryText = new TextField();
         injuryText.setLayoutX(150);
         injuryText.setLayoutY(70);
-        
 
-       // Create the add player button
+        // Create the add player button
         Button addPlayerButton = new Button("Add Player");
         addPlayerButton.setLayoutX(150);
         addPlayerButton.setLayoutY(110);
@@ -56,7 +50,7 @@ public class InjuryReserveForm extends Application {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Player name and injury must not be empty.");
                 alert.showAndWait();
             } else {
-                injuryReserve.addInjuredPlayer(player, injury);
+                addInjuredPlayerToDatabase(player, injury);
                 updateInjuredPlayersTextArea();
                 nameText.clear();
                 injuryText.clear();
@@ -71,12 +65,12 @@ public class InjuryReserveForm extends Application {
             String playerName = nameText.getText();
             String injury = injuryText.getText();
 
-            try {
-                injuryReserve.removeInjuredPlayer(playerName, injury);
-                updateInjuredPlayersTextArea();
-            } catch (EmptyStackException ex) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Player not found in the injury reserve.");
+            if (playerName.isEmpty() || injury.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Player name and injury must not be empty.");
                 alert.showAndWait();
+            } else {
+                removeInjuredPlayerFromDatabase(playerName, injury);
+                updateInjuredPlayersTextArea();
             }
         });
 
@@ -92,17 +86,57 @@ public class InjuryReserveForm extends Application {
         Scene scene = new Scene(pane, 400, 400);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        updateInjuredPlayersTextArea();
+    }
+
+    private Connection getConnection() throws SQLException {
+      return DriverManager.getConnection(URL1,USED,PASSWORD);
+    }
+
+    private void addInjuredPlayerToDatabase(String name, String injury) {
+        String insertSQL = "INSERT INTO injury_player (player, injuryText) VALUES (?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, injury);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeInjuredPlayerFromDatabase(String name, String injury) {
+        String deleteSQL = "DELETE FROM injury_player WHERE player = ? AND injuryText = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, injury);
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Player not found in the injury reserve.");
+                alert.showAndWait();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateInjuredPlayersTextArea() {
         injuredPlayersTextArea.clear();
         StringBuilder sb = new StringBuilder();
-        if (injuryReserve.isStackEmpty()) {
-            sb.append("No players are currently on the injury reserve.");
-        } else {
-            for (injuredPlayer injured : injuryReserve.getList()) {
-                sb.append(injured.toString()).append("\n\n");
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT player, injuryText FROM injury_player");
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (!rs.isBeforeFirst()) {
+                sb.append("No players are currently on the injury reserve.");
+            } else {
+                while (rs.next()) {
+                    sb.append("Player Name: ").append(rs.getString("player")).append("\n");
+                    sb.append("Injury: ").append(rs.getString("injuryText")).append("\n\n");
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         injuredPlayersTextArea.setText(sb.toString());
     }

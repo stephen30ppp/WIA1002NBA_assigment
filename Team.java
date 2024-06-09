@@ -113,6 +113,9 @@ public class Team {
             String position=sc.next();
             findPlayers(minHeight,minWeight,position);
         }
+        public List<Players> getPlayers(){
+        return players;
+        }
         public List<Players> printsearchplayer(double minWeight,double minHeight,String position){
                return players.stream()
                        .filter(p ->p.getWeight()>=minWeight)
@@ -120,8 +123,7 @@ public class Team {
                        .filter(p->p.getPosition().equalsIgnoreCase(position))
                        .collect(Collectors.toList());
         }
-    
-    public static void calculateAndPrintRankings() {
+    public static String calculateAndPrintRankings() {
 
         HashMap<String, Double> playerScores = new HashMap<>();
 
@@ -134,19 +136,22 @@ public class Team {
 
         // Sort players based on composite score
         List<Map.Entry<String, Double>> sortedEntries = new ArrayList<>(playerScores.entrySet());
-        //sortedEntries.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+//        sortedEntries.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
         insertionSort(sortedEntries);
-        
         // Print rankings
-        System.out.println(" -- Player Performance Ranking -- ");
+        StringBuilder sb = new StringBuilder();
+        sb.append(" -- Player Performance Ranking -- \n");
         int rank = 1;
         for (Map.Entry<String, Double> entry : sortedEntries) {
-            System.out.println("Player : " + entry.getKey());
-            System.out.printf("Composite Score : %.2f " ,entry.getValue());
-            System.out.println("Rank : " + rank);
-            System.out.println();
+            String name = entry.getKey();
+            double score = entry.getValue();
+            String formattedScore = String.format("%.2f", score);
+            sb.append("Player : ").append(name).append("\n");
+            sb.append("Composite Score : ").append(formattedScore).append("\n");
+            sb.append("Rank : ").append(rank).append("\n\n");
             rank++;
         }
+        return sb.toString();
     }
 
     private static double compositeScore(String position, Players player) {
@@ -166,8 +171,7 @@ public class Team {
 
         return compositionScore;
     }
-
-        public static void insertionSort(List<Map.Entry<String, Double>> list) {
+    public static void insertionSort(List<Map.Entry<String, Double>> list) {
         // To iterate through all the elements
         for (int i = 1; i < list.size(); i++) {
             Map.Entry<String, Double> currentEntry = list.get(i);
@@ -181,23 +185,19 @@ public class Team {
             list.set(k + 1, currentEntry);
         }
     }
-/*
-    public static void insertionSort(List<Map.Entry<String, Double>> list) {
-
-        // to iterate through all the elements
-        for (int i = 0; i<list.size(); i++) {
-            int current = list[i];
-            int k;
-
-            // inner loop to arrange the elements before i in ascending order
-            for (k=i-1 ; k>=0 && list[k]>current ; k--) {
-                list[k+1] = list[k];  // pushing to the right hand side
-            }
-            list[k+1] = current;
-        }
-    }
- */
-    
-
+//    public static void insertionSort(List<Map.Entry<String, Double>> list) {
+//
+//        // to iterate through all the elements
+//        for (int i = 0; i<list.size(); i++) {
+//            int current = list[i];
+//            int k;
+//
+//            // inner loop to arrange the elements before i in ascending order
+//            for (k=i-1 ; k>=0 && list[k]>current ; k--) {
+//                list[k+1] = list[k];  // pushing to the right hand side
+//            }
+//            list[k+1] = current;
+//        }
+//    }
     }
 

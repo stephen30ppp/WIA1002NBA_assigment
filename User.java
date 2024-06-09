@@ -1,3 +1,5 @@
+package views;
+
 public class User {
 
     private String username;
@@ -26,5 +28,3 @@ public class User {
     }
 
 }
-
-// login page - 1. find team by username.getTeam size, if 0 then make them make a team

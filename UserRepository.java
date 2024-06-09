@@ -6,9 +6,9 @@ import java.util.List;
 
 public class UserRepository {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/login_schema";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/nba_player";
     private static final String USER = "root";
-    private static final String PASSWORD = "MySQL";
+    private static final String PASSWORD = "Xyg66666";
 
     public User getUserByUsername(String username) throws SQLException {
         User user = null;

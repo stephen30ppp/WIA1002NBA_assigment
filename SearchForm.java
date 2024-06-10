@@ -163,6 +163,11 @@ public class SearchForm extends Application {
             return matches;
         }).collect(Collectors.toList());
 
+        if (filteredPlayers.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "No such players found.");
+            alert.showAndWait();
+        }
+
         updatePlayerListView(filteredPlayers);
     }
 
